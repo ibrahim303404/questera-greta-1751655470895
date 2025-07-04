@@ -42,54 +42,83 @@ const App = () => {
                 <Routes>
                   {/* Admin Routes */}
                   <Route path="/admin/login" element={<AdminLogin />} />
-                  <Route path="/admin/dashboard" element={
-                    <AdminRoute>
-                      <AdminDashboard />
-                    </AdminRoute>
-                  } />
-                  <Route path="/admin/add-movie" element={
-                    <AdminRoute>
-                      <AddContent type="movie" />
-                    </AdminRoute>
-                  } />
-                  <Route path="/admin/add-tvshow" element={
-                    <AdminRoute>
-                      <AddContent type="tvshow" />
-                    </AdminRoute>
-                  } />
-                  
+                  <Route
+                    path="/admin/dashboard"
+                    element={
+                      <AdminRoute>
+                        <AdminDashboard />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/add-movie"
+                    element={
+                      <AdminRoute>
+                        <AddContent type="movie" />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/add-tvshow"
+                    element={
+                      <AdminRoute>
+                        <AddContent type="tvshow" />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/edit-movie/:id"
+                    element={
+                      <AdminRoute>
+                        <AddContent type="movie" />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/edit-tvshow/:id"
+                    element={
+                      <AdminRoute>
+                        <AddContent type="tvshow" />
+                      </AdminRoute>
+                    }
+                  />
+
                   {/* Regular Routes with Navbar and Footer */}
-                  <Route path="/*" element={
-                    <>
-                      <Navbar />
-                      <main className="flex-grow">
-                        <Routes>
-                          <Route path="/" element={<Home />} />
-                          <Route path="/movies" element={<Movies />} />
-                          <Route path="/shows" element={<TVShows />} />
-                          <Route path="/kids" element={<Kids />} />
-                          <Route path="/my-list" element={<MyList />} />
-                          <Route path="/search" element={<Search />} />
-                          <Route path="/about" element={<About />} />
-                          <Route path="/help" element={<Help />} />
-                          <Route path="/login" element={<Login />} />
-                          <Route path="/signup" element={<Signup />} />
-                          <Route path="/profile/select" element={<ProfileSelect />} />
-                          <Route path="/profile/:id" element={<ProfileSettings />} />
-                          <Route path="/account/settings" element={<AccountSettings />} />
-                          <Route path="/movies/:id" element={<ContentDetail type="movies" />} />
-                          <Route path="/shows/:id" element={<ContentDetail type="shows" />} />
-                          {/* Legal Pages */}
-                          <Route path="/terms" element={<Terms />} />
-                          <Route path="/privacy" element={<Privacy />} />
-                          <Route path="/cookies" element={<Cookies />} />
-                          <Route path="/corporate" element={<Corporate />} />
-                          <Route path="/legal" element={<Legal />} />
-                        </Routes>
-                      </main>
-                      <Footer />
-                    </>
-                  } />
+                  <Route
+                    path="/*"
+                    element={
+                      <>
+                        <Navbar />
+                        <main className="flex-grow">
+                          <Routes>
+                            <Route path="/" element={<Home />} />
+                            <Route path="/movies" element={<Movies />} />
+                            <Route path="/shows" element={<TVShows />} />
+                            <Route path="/kids" element={<Kids />} />
+                            <Route path="/my-list" element={<MyList />} />
+                            <Route path="/search" element={<Search />} />
+                            <Route path="/about" element={<About />} />
+                            <Route path="/help" element={<Help />} />
+                            <Route path="/login" element={<Login />} />
+                            <Route path="/signup" element={<Signup />} />
+                            <Route path="/profile/select" element={<ProfileSelect />} />
+                            <Route path="/profile/:id" element={<ProfileSettings />} />
+                            <Route path="/account/settings" element={<AccountSettings />} />
+                            <Route path="/movies/:id" element={<ContentDetail type="movies" />} />
+                            <Route path="/shows/:id" element={<ContentDetail type="shows" />} />
+                            
+                            {/* Legal Pages */}
+                            <Route path="/terms" element={<Terms />} />
+                            <Route path="/privacy" element={<Privacy />} />
+                            <Route path="/cookies" element={<Cookies />} />
+                            <Route path="/corporate" element={<Corporate />} />
+                            <Route path="/legal" element={<Legal />} />
+                          </Routes>
+                        </main>
+                        <Footer />
+                      </>
+                    }
+                  />
                 </Routes>
               </div>
             </WatchlistProvider>

@@ -1,14 +1,23 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FaFilm, FaTv, FaPlus, FaEdit, FaTrash, FaSignOutAlt, FaUsers, FaChartLine } from 'react-icons/fa';
+import { FaFilm, FaTv, FaPlus, FaEdit, FaTrash, FaSignOutAlt, FaUsers, FaChartLine, FaCog } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { useAdmin } from '../context/AdminContext';
 import { useContent } from '../context/ContentContext';
 
 const AdminDashboard = () => {
-  const { adminLogout } = useAdmin();
+  const { adminUser, adminLogout } = useAdmin();
   const { movies, tvShows, deleteMovie, deleteTvShow } = useContent();
   const [activeTab, setActiveTab] = useState('overview');
+  const [showSettings, setShowSettings] = useState(false);
+  const [loginSettings, setLoginSettings] = useState(() => {
+    const saved = localStorage.getItem('adminLoginSettings');
+    return saved ? JSON.parse(saved) : {
+      rememberLogin: true,
+      autoLogout: false,
+      sessionTimeout: 60 // minutes
+    };
+  });
 
   const stats = [
     {
@@ -43,6 +52,20 @@ const AdminDashboard = () => {
     }
   };
 
+  const handleSettingsChange = (key, value) => {
+    const newSettings = { ...loginSettings, [key]: value };
+    setLoginSettings(newSettings);
+    localStorage.setItem('adminLoginSettings', JSON.stringify(newSettings));
+  };
+
+  const clearLoginData = () => {
+    if (window.confirm('Are you sure you want to clear all saved login data?')) {
+      localStorage.removeItem('adminAuth');
+      localStorage.removeItem('adminLoginSettings');
+      adminLogout();
+    }
+  };
+
   return (
     <div className="min-h-screen bg-dark">
       {/* Header */}
@@ -51,17 +74,119 @@ const AdminDashboard = () => {
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center">
               <h1 className="text-2xl font-bold text-primary">StreamFlix Admin</h1>
+              <span className="ml-4 text-sm text-gray-400">
+                Welcome, {adminUser?.username}
+              </span>
             </div>
-            <button
-              onClick={adminLogout}
-              className="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-            >
-              <FaSignOutAlt />
-              <span>Logout</span>
-            </button>
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={() => setShowSettings(!showSettings)}
+                className="p-2 text-gray-400 hover:text-white transition-colors"
+                title="Settings"
+              >
+                <FaCog />
+              </button>
+              <button
+                onClick={adminLogout}
+                className="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              >
+                <FaSignOutAlt />
+                <span>Logout</span>
+              </button>
+            </div>
           </div>
         </div>
       </header>
+
+      {/* Settings Modal */}
+      {showSettings && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="bg-gray-850 rounded-xl w-full max-w-lg p-6"
+          >
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-semibold text-white">Admin Settings</h2>
+              <button
+                onClick={() => setShowSettings(false)}
+                className="text-gray-400 hover:text-white"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="space-y-6">
+              {/* Login Settings */}
+              <div>
+                <h3 className="text-lg font-medium mb-4 text-white">Login Settings</h3>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-white">Remember Login</span>
+                    <input
+                      type="checkbox"
+                      checked={loginSettings.rememberLogin}
+                      onChange={(e) => handleSettingsChange('rememberLogin', e.target.checked)}
+                      className="rounded bg-gray-700 border-gray-600"
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-white">Auto Logout</span>
+                    <input
+                      type="checkbox"
+                      checked={loginSettings.autoLogout}
+                      onChange={(e) => handleSettingsChange('autoLogout', e.target.checked)}
+                      className="rounded bg-gray-700 border-gray-600"
+                    />
+                  </div>
+                  {loginSettings.autoLogout && (
+                    <div>
+                      <label className="block text-sm font-medium mb-2 text-white">
+                        Session Timeout (minutes)
+                      </label>
+                      <input
+                        type="number"
+                        value={loginSettings.sessionTimeout}
+                        onChange={(e) => handleSettingsChange('sessionTimeout', parseInt(e.target.value))}
+                        min="5"
+                        max="480"
+                        className="w-full px-3 py-2 bg-gray-700 text-white rounded-lg"
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Session Info */}
+              <div>
+                <h3 className="text-lg font-medium mb-4 text-white">Session Information</h3>
+                <div className="space-y-2 text-sm text-gray-300">
+                  <p>Logged in as: <span className="text-white">{adminUser?.username}</span></p>
+                  <p>Login time: <span className="text-white">
+                    {new Date(adminUser?.loginTime).toLocaleString()}
+                  </span></p>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex justify-between pt-4 border-t border-gray-700">
+                <button
+                  onClick={clearLoginData}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                >
+                  Clear Login Data
+                </button>
+                <button
+                  onClick={() => setShowSettings(false)}
+                  className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
 
       <div className="flex">
         {/* Sidebar */}
@@ -203,9 +328,12 @@ const AdminDashboard = () => {
                           <td className="px-6 py-4 text-white">{movie.genre.join(', ')}</td>
                           <td className="px-6 py-4">
                             <div className="flex space-x-2">
-                              <button className="p-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                              <Link
+                                to={`/admin/edit-movie/${movie.id}`}
+                                className="p-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                              >
                                 <FaEdit />
-                              </button>
+                              </Link>
                               <button 
                                 onClick={() => handleDeleteMovie(movie.id)}
                                 className="p-2 bg-red-600 text-white rounded hover:bg-red-700"
@@ -266,9 +394,12 @@ const AdminDashboard = () => {
                           <td className="px-6 py-4 text-white">{show.genre.join(', ')}</td>
                           <td className="px-6 py-4">
                             <div className="flex space-x-2">
-                              <button className="p-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                              <Link
+                                to={`/admin/edit-tvshow/${show.id}`}
+                                className="p-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                              >
                                 <FaEdit />
-                              </button>
+                              </Link>
                               <button 
                                 onClick={() => handleDeleteTvShow(show.id)}
                                 className="p-2 bg-red-600 text-white rounded hover:bg-red-700"

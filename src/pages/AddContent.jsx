@@ -1,18 +1,25 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FaSave, FaArrowLeft } from 'react-icons/fa';
+import { FaSave, FaArrowLeft, FaPlay } from 'react-icons/fa';
 import { useContent } from '../context/ContentContext';
 
 const AddContent = ({ type = 'movie' }) => {
   const navigate = useNavigate();
-  const { addMovie, addTvShow } = useContent();
+  const { id } = useParams();
+  const { addMovie, addTvShow, updateMovie, updateTvShow, movies, tvShows } = useContent();
   
+  const isEditing = !!id;
+  const existingContent = isEditing 
+    ? (type === 'movie' ? movies.find(m => m.id === parseInt(id)) : tvShows.find(s => s.id === parseInt(id)))
+    : null;
+
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     image: '',
     banner: '',
+    videoUrl: '',
     year: new Date().getFullYear(),
     rating: 0,
     genre: [],
@@ -27,10 +34,31 @@ const AddContent = ({ type = 'movie' }) => {
   const [newGenre, setNewGenre] = useState('');
   const [newCast, setNewCast] = useState('');
 
+  useEffect(() => {
+    if (isEditing && existingContent) {
+      setFormData({
+        title: existingContent.title || '',
+        description: existingContent.description || '',
+        image: existingContent.image || '',
+        banner: existingContent.banner || '',
+        videoUrl: existingContent.videoUrl || '',
+        year: existingContent.year || new Date().getFullYear(),
+        rating: existingContent.rating || 0,
+        genre: existingContent.genre || [],
+        maturityRating: existingContent.maturityRating || 'PG-13',
+        director: existingContent.director || '',
+        creator: existingContent.creator || '',
+        cast: existingContent.cast || [],
+        duration: existingContent.duration || '',
+        seasons: existingContent.seasons || 1
+      });
+    }
+  }, [isEditing, existingContent]);
+
   const genres = [
-    'Action', 'Adventure', 'Comedy', 'Crime', 'Drama', 'Fantasy', 
-    'Horror', 'Mystery', 'Romance', 'Sci-Fi', 'Thriller', 'Animation',
-    'Documentary', 'Family', 'Musical', 'Western', 'Biography', 'History'
+    'Action', 'Adventure', 'Comedy', 'Crime', 'Drama', 'Fantasy', 'Horror',
+    'Mystery', 'Romance', 'Sci-Fi', 'Thriller', 'Animation', 'Documentary',
+    'Family', 'Musical', 'Western', 'Biography', 'History'
   ];
 
   const handleInputChange = (e) => {
@@ -85,12 +113,20 @@ const AddContent = ({ type = 'movie' }) => {
       seasons: type === 'tvshow' ? parseInt(formData.seasons) : undefined
     };
 
-    if (type === 'movie') {
-      addMovie(contentData);
+    if (isEditing) {
+      if (type === 'movie') {
+        updateMovie(parseInt(id), contentData);
+      } else {
+        updateTvShow(parseInt(id), contentData);
+      }
     } else {
-      addTvShow(contentData);
+      if (type === 'movie') {
+        addMovie(contentData);
+      } else {
+        addTvShow(contentData);
+      }
     }
-
+    
     navigate('/admin/dashboard');
   };
 
@@ -105,7 +141,7 @@ const AddContent = ({ type = 'movie' }) => {
             <FaArrowLeft />
           </button>
           <h1 className="text-3xl font-bold text-white">
-            Add New {type === 'movie' ? 'Movie' : 'TV Show'}
+            {isEditing ? 'Edit' : 'Add New'} {type === 'movie' ? 'Movie' : 'TV Show'}
           </h1>
         </div>
 
@@ -127,7 +163,7 @@ const AddContent = ({ type = 'movie' }) => {
                   required
                 />
               </div>
-
+              
               <div>
                 <label className="block text-sm font-medium mb-2 text-white">Year</label>
                 <input
@@ -167,7 +203,7 @@ const AddContent = ({ type = 'movie' }) => {
                   required
                 />
               </div>
-
+              
               <div>
                 <label className="block text-sm font-medium mb-2 text-white">Banner Image URL</label>
                 <input
@@ -178,6 +214,25 @@ const AddContent = ({ type = 'movie' }) => {
                   className="w-full px-4 py-2 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
+            </div>
+
+            {/* Video URL Field */}
+            <div>
+              <label className="block text-sm font-medium mb-2 text-white">
+                <FaPlay className="inline mr-2" />
+                Video URL (MP4 Link)
+              </label>
+              <input
+                type="url"
+                name="videoUrl"
+                value={formData.videoUrl}
+                onChange={handleInputChange}
+                placeholder="https://example.com/video.mp4"
+                className="w-full px-4 py-2 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+              <p className="text-sm text-gray-400 mt-1">
+                Direct link to MP4 file for video playback
+              </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -195,7 +250,7 @@ const AddContent = ({ type = 'movie' }) => {
                   required
                 />
               </div>
-
+              
               <div>
                 <label className="block text-sm font-medium mb-2 text-white">Maturity Rating</label>
                 <select
@@ -258,6 +313,7 @@ const AddContent = ({ type = 'movie' }) => {
               />
             </div>
 
+            {/* Genres */}
             <div>
               <label className="block text-sm font-medium mb-2 text-white">Genres</label>
               <div className="flex flex-wrap gap-2 mb-3">
@@ -298,6 +354,7 @@ const AddContent = ({ type = 'movie' }) => {
               </div>
             </div>
 
+            {/* Cast */}
             <div>
               <label className="block text-sm font-medium mb-2 text-white">Cast</label>
               <div className="flex flex-wrap gap-2 mb-3">
@@ -348,7 +405,7 @@ const AddContent = ({ type = 'movie' }) => {
                 className="flex items-center space-x-2 px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
               >
                 <FaSave />
-                <span>Save {type === 'movie' ? 'Movie' : 'TV Show'}</span>
+                <span>{isEditing ? 'Update' : 'Save'} {type === 'movie' ? 'Movie' : 'TV Show'}</span>
               </button>
             </div>
           </form>
