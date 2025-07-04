@@ -1,33 +1,77 @@
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  * {
+    direction: rtl;
+  }
+  
   body {
-    @apply bg-dark text-white;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    @apply bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 text-white;
+    font-family: 'Tajawal', 'Arial', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-
+  
   #root {
-    @apply bg-dark;
+    @apply bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900;
+    min-height: 100vh;
   }
-
+  
   main {
-    @apply bg-dark;
+    @apply bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900;
   }
-
+  
   h1, h2, h3, h4, h5, h6, p, span, div, button, input, select, textarea {
     @apply text-white;
+    font-family: 'Tajawal', 'Arial', sans-serif;
   }
-
+  
   input, select, textarea {
-    @apply text-white bg-gray-700;
+    @apply text-white bg-gray-800/50 backdrop-blur-sm border border-purple-500/20;
+    direction: rtl;
   }
-
+  
   input::placeholder, textarea::placeholder {
     @apply text-gray-400;
+    direction: rtl;
+  }
+  
+  .arabic-text {
+    font-family: 'Tajawal', 'Arial', sans-serif;
+    direction: rtl;
+    text-align: right;
+  }
+}
+
+@layer components {
+  .glass-effect {
+    @apply bg-black/30 backdrop-blur-md border border-white/10;
+  }
+  
+  .gradient-bg {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+  
+  .card-hover {
+    @apply transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/25;
+  }
+  
+  .btn-primary {
+    @apply bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl;
+  }
+  
+  .btn-secondary {
+    @apply bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300;
+  }
+  
+  .text-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 }
 
@@ -35,10 +79,41 @@
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
-
+  
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+  
+  .slider-white::-webkit-slider-thumb {
+    appearance: none;
+    height: 16px;
+    width: 16px;
+    background: white;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid #8B5CF6;
+  }
+  
+  .slider-white::-webkit-slider-track {
+    height: 4px;
+    background: #ffffff40;
+    border-radius: 2px;
+  }
+  
+  .slider-white::-moz-range-thumb {
+    height: 16px;
+    width: 16px;
+    background: white;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid #8B5CF6;
+  }
+  
+  .slider-white::-moz-range-track {
+    height: 4px;
+    background: #ffffff40;
+    border-radius: 2px;
   }
 }
 
@@ -49,6 +124,45 @@
 }
 
 .nav-blur {
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* تحسينات للنصوص العربية */
+.arabic-title {
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+.arabic-body {
+  line-height: 1.75;
+  font-weight: 400;
+}
+
+/* تأثيرات الحركة المحسنة */
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+.animate-pulse-slow {
+  animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* تدرجات لونية جميلة */
+.bg-aurora {
+  background: linear-gradient(45deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
+  background-size: 400% 400%;
+  animation: aurora 15s ease infinite;
+}
+
+@keyframes aurora {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }

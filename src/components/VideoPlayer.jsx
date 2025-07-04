@@ -117,28 +117,28 @@ const VideoPlayer = ({ videoUrl, subtitles, onClose }) => {
             max="100"
             value={progress}
             onChange={handleSeek}
-            className="w-full h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer"
+            className="w-full h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer slider-white"
           />
 
           <div className="flex items-center justify-between mt-4">
             <div className="flex items-center space-x-4">
               <button
                 onClick={handlePlayPause}
-                className="text-2xl hover:text-primary"
+                className="text-2xl text-white hover:text-primary"
               >
                 {isPlaying ? <FaPause /> : <FaPlay />}
               </button>
 
               <button
                 onClick={() => videoRef.current.currentTime -= 10}
-                className="hover:text-primary"
+                className="text-white hover:text-primary"
               >
                 <FaBackward />
               </button>
 
               <button
                 onClick={() => videoRef.current.currentTime += 10}
-                className="hover:text-primary"
+                className="text-white hover:text-primary"
               >
                 <FaForward />
               </button>
@@ -146,7 +146,7 @@ const VideoPlayer = ({ videoUrl, subtitles, onClose }) => {
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => setIsMuted(!isMuted)}
-                  className="hover:text-primary"
+                  className="text-white hover:text-primary"
                 >
                   {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
                 </button>
@@ -157,21 +157,21 @@ const VideoPlayer = ({ videoUrl, subtitles, onClose }) => {
                   step="0.1"
                   value={volume}
                   onChange={handleVolumeChange}
-                  className="w-20 h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer"
+                  className="w-20 h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer slider-white"
                 />
               </div>
             </div>
 
             <div className="flex items-center space-x-4">
-              <button className="hover:text-primary">
+              <button className="text-white hover:text-primary">
                 <FaClosedCaptioning />
               </button>
-              <button className="hover:text-primary">
+              <button className="text-white hover:text-primary">
                 <FaCog />
               </button>
               <button
                 onClick={handleFullscreen}
-                className="hover:text-primary"
+                className="text-white hover:text-primary"
               >
                 {isFullscreen ? <FaCompress /> : <FaExpand />}
               </button>
